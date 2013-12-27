@@ -1,0 +1,18 @@
+attach s_jack.cc
+attach bm_jack.cc
+attach bm_jack_wrap.cc
+
+options trace
+
+verilog
+
+m_jack outjack(0 1);
+v_jack injack(0 2);
+
+spice
+R1 1 2 1k
+R2 1 0 1k
+*.print tran v(1) v(2)
+.nodelist
+.jack
+.end

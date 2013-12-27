@@ -1,0 +1,28 @@
+attach s_jack.cc
+attach bm_jack.cc
+attach bm_jack_wrap.cc
+
+options trace
+
+verilog
+
+m_jack #(.connect(1)) jack1(0 nout1);
+m_jack #(.connect(2)) jack2(0 nout2);
+
+v_jack jack3(0 nin1);
+v_jack jack4(0 nin2);
+
+
+spice
+.model mydiode d
+R1 nin1 nout1 1k
+C1 nout1 0 {1m/400/6}
+D1 nout1 0 mydiode
+
+R2 nin2 nout2 1k
+C2 nout2 0 {1m/400/6}
+
+*.print tran v(1) v(2)
+.nodelist
+.jack
+.end

@@ -1,0 +1,20 @@
+attach s_jack.cc
+attach bm_jack.cc
+attach bm_jack_wrap.cc
+
+options trace
+
+verilog
+
+m_jack #(.connect(1)) jack1(0 1);
+m_jack #(.connect(2)) jack2(0 2);
+
+spice
+V1 0 1 sin frequency=440 amplitude=1
+V2 0 2 sin frequency=480 amplitude=1
+* I1 0 1 jack
+
+*.print tran v(1) v(2)
+.nodelist
+.jack
+.end

@@ -1,0 +1,28 @@
+attach s_jack.cc
+attach bm_jack.cc
+attach bm_jack_wrap.cc
+
+options trace
+
+verilog
+
+m_jack #(.connect(1)) left_lo(nout1 0);
+m_jack #(.connect(0)) left_hi(nin1 nout1);
+
+m_jack #(.connect(2)) right_lo(nout2 0);
+m_jack #(.connect(0)) right_hi(nin2 nout2);
+
+v_jack left_in(nin1 0);
+v_jack right_in(nin2 0);
+
+
+spice
+R1 nin1 nout1 1k
+C1 nout1 0 {.4u}
+
+R2 nin2 nout2 1k
+C2 nout2 0 {.4u}
+
+.nodelist
+.jack
+.end

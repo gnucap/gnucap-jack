@@ -1,0 +1,28 @@
+jack interface models and jack command.
+works with gnucap from dt branch on tool.
+
+=== v_jack device implements jack controlled voltage source
+
+parameters:
+ - connect (unsigned)
+   if positive. connect to the connect-th physical jack input port upon expansion
+   (not implemented)
+ - gain (real)
+   gain. (not implemented)
+
+=== m_jack device provides output to jack
+
+parameters:
+ - connect (unsigned)
+   if positive. connect to the connect-th physical jack output port upon expansion
+ - gain (real)
+   gain. (not implemented)
+
+=== jack simulation
+
+.jack. starts jack simulation. starts simplified infinite transient simulation. (incomplete)
+
+arguments:
+ - sample{rate}.
+   either 48k (default) or 24k.
+   0=auto (not implemented)

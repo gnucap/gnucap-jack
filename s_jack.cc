@@ -105,7 +105,7 @@ void TRANSIENT::setup(CS& Cmd)
  */
 void TRANSIENT::options(CS& Cmd)
 {
-  unsigned int sr = 44600;
+  unsigned int sr = 48e3;
   trace0("JACK::options");
   _out = IO::mstdout;
   _out.reset(); //BUG// don't know why this is needed

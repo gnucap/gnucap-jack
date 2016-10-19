@@ -21,16 +21,24 @@
  *------------------------------------------------------------------
  * JACK bm plugin
  */
+
+//hack
+#define hp(x)
+
 #include "e_elemnt.h"
+#include "globals.h"
 #include "u_lang.h"
 #include "l_denoise.h"
 #include "bm.h"
+
 extern "C"{
   #include <jack/jack.h>
   #include <jack/transport.h>
   #include <sys/types.h>
   #include <unistd.h>
 }
+
+#include <boost/assign.hpp>
 
 /*--------------------------------------------------------------------------*/
 static const unsigned MAXPORTS = 16;
@@ -146,7 +154,7 @@ void EVAL_BM_JACK::precalc_first(const CARD_LIST* Scope)
 void EVAL_BM_JACK::precalc_last(const CARD_LIST*)
 {
 	_samples_per_step = (short unsigned) (double(_sr) * CKT_BASE::_sim->_dtmin / 0.9999);
-	error(bTRACE, "precalc_last sr " + to_string(_sr) + "\n");
+	error(bTRACE, "precalc_last sr " + to_string(unsigned(_sr)) + "\n");
 	error(bTRACE, "precalc_last dtmin " + to_string(CKT_BASE::_sim->_dtmin) + "\n");
 	error(bTRACE, "precalc_last samples_per_step " + to_string(_samples_per_step) + "\n");
 }
@@ -203,7 +211,7 @@ int EVAL_BM_JACK::srate(jack_nframes_t nframes)
 /*--------------------------------------------------------------------------*/
 void EVAL_BM_JACK::expand(const COMPONENT* d)
 {
-	trace3("expand", d->long_label(), hp(this), hp(d));
+	// trace3("expand", d->long_label(), hp(this), hp(d));
 	pid_t p = getpid();
 	string client_name = "gnucap [" + to_string(p) + "]";
 	const char* port_name = d->long_label().c_str();
@@ -218,7 +226,7 @@ void EVAL_BM_JACK::expand(const COMPONENT* d)
 		_nframes = jack_get_buffer_size(_client);
 
 		error(bTRACE, "nframes: " + to_string(_nframes) + "\n");
-		error(bTRACE, "samplerate " + to_string(_sr) + "\n");
+		error(bTRACE, "samplerate " + to_string((int)_sr) + "\n");
 		error(bTRACE, "dtmin " + to_string(d->_sim->_dtmin) + "\n");
 
 		jack_set_sample_rate_callback(_client, srate_cb, (void*) _ctx);
@@ -252,7 +260,7 @@ void EVAL_BM_JACK::expand(const COMPONENT* d)
 		while (*c) {
 			++c;
 		}
-		error(bTRACE, "registering " + dir + " port " + d->long_label() + " in slot " + to_string(c-_ctx) + "\n");
+		error(bTRACE, "registering " + dir + " port " + d->long_label() + " in slot " + to_string(int(c-_ctx)) + "\n");
 		assert(c-_ctx<MAXPORTS);
 		*c = this;
 
@@ -300,7 +308,11 @@ void EVAL_BM_JACK::tr_eval(ELEMENT* d)const
 TIME_PAIR EVAL_BM_JACK::tr_review(COMPONENT* d)const
 {
   d->q_accept();
+#ifdef HAVE_DTIME
   return d->_dt_by;
+#else
+  return d->_time_by;
+#endif
 }
 /*--------------------------------------------------------------------------*/
 void EVAL_BM_JACK::tr_accept(COMPONENT*d)const

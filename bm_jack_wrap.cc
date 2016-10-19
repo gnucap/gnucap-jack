@@ -1,5 +1,8 @@
 #include <globals.h>
 #include <e_compon.h>
+#ifndef HAVE_UINT_T
+typedef int uint_t;
+#endif
 
 namespace {
 using std::string;
@@ -24,6 +27,7 @@ class DEV_MEAS_JACK : public COMPONENT { //
 			assert(d->dev_type() == "m_jack");
 			return d;
 		}
+		bool print_type_in_spice()const {return false;}
 }p1;
 DISPATCHER<CARD>::INSTALL d1(&device_dispatcher, "m_jack|meas_jack", &p1);
 
@@ -47,6 +51,7 @@ class DEV_VS_SIN : public COMPONENT { //
 			assert(d->dev_type() == "v_jack");
 			return d;
 		}
+		bool print_type_in_spice()const {return false;}
 }p2;
 DISPATCHER<CARD>::INSTALL d2(&device_dispatcher, "v_jack", &p2);
 }

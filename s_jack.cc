@@ -1,5 +1,5 @@
 /*                      -*- C++ -*-
- * Copyright (C) 2013 Felix Salfelder
+ * Copyright (C) 2013-2016 Felix Salfelder
  * Author: Felix Salfelder <felix@salfelder.org>
  *
  * This file is part of "Gnucap", the Gnu Circuit Analysis Package
@@ -34,7 +34,7 @@
 #include "io_.h"
 #include "s__.h"
 /*--------------------------------------------------------------------------*/
-namespace {
+namespace { //
 #include "s_tr.h"
   TRANSIENT p5;
   DISPATCHER<CMD>::INSTALL      d5(&command_dispatcher, "jack", &p5);
@@ -42,12 +42,13 @@ namespace {
 int TRANSIENT::steps_accepted_;
 int TRANSIENT::steps_rejected_;
 int TRANSIENT::steps_total_;
-int TRANSIENT::steps_total_out_; //??
+
+// int TRANSIENT::steps_total_out_; //??
 
 bool skipreview = true; // hmmm
 /*--------------------------------------------------------------------------*/
 void TRANSIENT::do_it(CS& Cmd, CARD_LIST* Scope)
-{
+{ untested();
   trace0("JACK::do_it");
   _scope = Scope;
   _sim->set_command_tran();
@@ -58,7 +59,7 @@ void TRANSIENT::do_it(CS& Cmd, CARD_LIST* Scope)
 }
 /*--------------------------------------------------------------------------*/
 std::string TRANSIENT::status()const
-{
+{ untested();
   return "transient timesteps: accepted=" + to_string(steps_accepted())
     + ", rejected=" + to_string(steps_rejected())
     + ", total=" + to_string(steps_total()) + "\n";  
@@ -76,15 +77,15 @@ std::string TRANSIENT::status()const
 PARAMETER<unsigned> _samplerate;
 
 void TRANSIENT::setup(CS& Cmd)
-{
+{ untested();
   _samplerate.e_val(44600, _scope);
-  if (Cmd.match1("'\"({") || Cmd.is_pfloat()) {
+  if (Cmd.match1("'\"({") || Cmd.is_pfloat()) { untested();
     trace1("TRANSIENT::setup parsing args", printlist().size());
     PARAMETER<unsigned> arg1;
     Cmd >> arg1;
     arg1.e_val(44600,_scope);
     
-    if (arg1.has_hard_value()) {
+    if (arg1.has_hard_value()) { untested();
       _samplerate = arg1;
     }
   }
@@ -93,18 +94,22 @@ void TRANSIENT::setup(CS& Cmd)
   options(Cmd);
 
   _sim->_freq = _samplerate;
-  _tstep = 1/_sim->_freq;
-  _dtmax = _tstep;
-  _sim->_dtmin = _dtmax;
   _tstart = 0;
   _sim->_time0 = 0;
+#ifdef USE_DTIME
+  _tstep = 1/_sim->_freq;
+  _dtmax = _tstep;
   _sim->_dt0 = 0;
+  _sim->_dtmin = _dtmax;
+#else
+  _sim->_dtmin = 1/_sim->_freq;
+#endif
 }
 /*--------------------------------------------------------------------------*/
 /* tr_options: set options common to transient and fourier analysis
  */
 void TRANSIENT::options(CS& Cmd)
-{
+{ untested();
   unsigned int sr = 48e3;
   trace0("JACK::options");
   _out = IO::mstdout;
@@ -114,7 +119,7 @@ void TRANSIENT::options(CS& Cmd)
   _sim->_uic = _cold = false;
   _trace = tNONE;
   unsigned here = Cmd.cursor();
-  do{
+  do{ untested();
     ONE_OF
       || Get(Cmd, "c{old}",	   &_cold)
       || Get(Cmd, "dte{mp}",	   &_sim->_temp_c,  mOFFSET, OPT::temp_c)
@@ -172,8 +177,8 @@ void TRANSIENT::options(CS& Cmd)
 //	void	TRANSIENT::reject(void);
 /*--------------------------------------------------------------------------*/
 /*--------------------------------------------------------------------------*/
-namespace TR {
-  static std::string step_cause[] = {
+namespace TR { untested();
+  static std::string step_cause[] = { //
     "impossible",
     "user requested",
     "event queue",
@@ -188,7 +193,7 @@ namespace TR {
 }
 /*--------------------------------------------------------------------------*/
 void TRANSIENT::sweep()
-{
+{ untested();
   trace0("JACK::sweep");
   _sim->_phase = p_INIT_DC;
   head(_tstart, _tstop, "Time");
@@ -199,7 +204,7 @@ void TRANSIENT::sweep()
     _sim->_phase = p_RESTORE;
     _sim->restore_voltages();
     CARD_LIST::card_list.tr_restore();
-  }else{
+  }else{ untested();
     _sim->clear_limit();
     CARD_LIST::card_list.tr_begin();
   }
@@ -207,7 +212,7 @@ void TRANSIENT::sweep()
   first();
   _sim->_genout = gen();
   
-  if (_sim->uic_now()) {
+  if (_sim->uic_now()) { untested();
     advance_time();
     _sim->zero_voltages();
     CARD_LIST::card_list.do_tr();    //evaluate_models
@@ -218,27 +223,27 @@ void TRANSIENT::sweep()
     _converged = true;
     _sim->_loadq.clear(); // fake solve, clear the queue
     //BUG// UIC needs further analysis.
-  }else{
+  }else{ untested();
     _converged = solve_with_homotopy(OPT::DCBIAS,_trace);
-    if (!_converged) {
+    if (!_converged) { untested();
       error(bWARNING, "did not converge\n");
-    }else{
+    }else{ untested();
     }
   }
   review(); 
   _accepted = true;
   accept();
   
-  {
+  { untested();
     bool printnow = (_sim->_time0 == _tstart || _trace >= tALLTIME);
-    if (printnow) {
+    if (printnow) { untested();
       _sim->keep_voltages();
-      outdata(_sim->_time0);
+      outdata(_sim->_time0, ofPRINT);
     }else{untested();
     }
   }
   
-  while (next()) {
+  while (next()) { untested();
     trace2("loop", step_cause(), _sim->_iter[p_TRAN]);
     _sim->count_iterations(p_TRAN); // after accept??
     _sim->_bypass_ok = false;
@@ -248,46 +253,53 @@ void TRANSIENT::sweep()
 
     _accepted = _converged && review();
 
-    if (_accepted) {
+    if (_accepted) { untested();
       assert(_converged);
-      assert(_sim->_dt0 <= _time_by_user_request);
+//      assert(_sim->_dt0 <= _time_by_user_request);
       accept();
-      if (step_cause() == scUSER) {
+      if (step_cause() == scUSER) { untested();
 	assert(up_order(_sim->_time0-_sim->_dtmin, _time_by_user_request, _sim->_time0+_sim->_dtmin));
 	++_stepno;
+#ifdef USE_DTIME
 	_time_by_user_request = _tstep;	/* advance user time */
+#else
+	_time_by_user_request += _tstrobe;
+#endif
       }else{ untested();
+	incomplete();
+#ifdef USE_DTIME
 	_time_by_user_request -= _sim->_dt0;
+#endif
       }
       assert(0 < _time_by_user_request);
     }else{ untested();
       reject();
-      assert(time1 < _time_by_user_request);
+//      assert(time1 < _time_by_user_request);
     }
-    {
+    { untested();
       bool printnow =
 	   (_trace >= tREJECTED)
 	|| (_accepted && ((_trace >= tALLTIME) 
 			  || (step_cause() == scUSER && _sim->_time0+_sim->_dtmin > _tstart)));
-      if (_sim->_iter[p_TRAN] & ((1U << 12) - 1)) {
-      } else if (printnow) {
+      if (_sim->_iter[p_TRAN] & ((1U << 12) - 1)) { untested();
+      } else if (printnow) { untested();
 	_sim->keep_voltages();
-	outdata(_sim->_time0);
-      }else{
+	outdata(_sim->_time0, ofPRINT);
+      }else{ untested();
       }
     }
     
     if (!_converged && OPT::quitconvfail) {untested();
-      outdata(_sim->_time0);
+      outdata(_sim->_time0, ofPRINT);
       throw Exception("convergence failure, giving up");
-    }else{
+    }else{ untested();
     }
   }
 }
 /*--------------------------------------------------------------------------*/
 void TRANSIENT::set_step_cause(STEP_CAUSE C)
-{
-  switch (C) {
+{ untested();
+  switch (C) { untested();
   case scITER_A:untested();
   case scADT:untested();
   case scITER_R:
@@ -311,17 +323,21 @@ void TRANSIENT::set_step_cause(STEP_CAUSE C)
 }
 /*--------------------------------------------------------------------------*/
 int TRANSIENT::step_cause()const
-{
+{ untested();
   return ::status.control;
 }
 /*--------------------------------------------------------------------------*/
 void TRANSIENT::first()
-{
+{ untested();
   /* usually, _sim->_time0, time1 == 0, from setup */
-  assert(_sim->_time0 == time1);
+//  assert(_sim->_time0 == time1);
   assert(_sim->_time0 <= _tstart);
+#ifdef USE_DTIME
   _time_by_user_request = _tstep;
-  while (!_sim->_eq.empty()) {
+#else
+  _time_by_user_request = _tstrobe;
+#endif
+  while (!_sim->_eq.empty()) { untested();
     _sim->_eq.pop();
   }
   _stepno = 0;
@@ -358,18 +374,29 @@ void TRANSIENT::first()
  * Try several methods.  Take the one that gives the shortest step.
  */
 bool TRANSIENT::next()
-{
+{ untested();
   double _dt_by_user_request = _time_by_user_request;
 
+#ifdef USE_DTIME
   double old_dt = _sim->_time0 - time1;
+#else
+  incomplete();
+  double old_dt = 0;
+#endif
   assert(old_dt >= 0);
   
   double new_dt = _dt_by_user_request;
   double newtime = _sim->_time0 + new_dt;
   STEP_CAUSE new_control = scNO_ADVANCE;
 
-  if (_sim->_dt0 == 0) { untested();
-    assert(time1==0);
+#ifdef USE_DTIME
+  if (_sim->_dt0 == 0)
+#else
+    // huh
+  if (_sim->_time0 == 0)
+#endif
+  { untested();
+//    assert(time1==0);
     new_dt = _dtmax/2;
     newtime = _sim->_time0 + new_dt;
     new_control = scINITIAL;
@@ -378,7 +405,7 @@ bool TRANSIENT::next()
     newtime = _sim->_time0 + new_dt;
     new_control = scITER_R;
     new_control = scUSER;
-  }else{
+  }else{ untested();
     new_dt = std::min(_dtmax,new_dt);
     newtime = _sim->_time0 + new_dt;
     new_control = scUSER;
@@ -388,57 +415,69 @@ bool TRANSIENT::next()
 
   /* got it, I think */
 
+#ifdef USE_DTIME
   _sim->_dt0 = new_dt;
   _sim->_time0 = new_dt;
+#else
+  _sim->_time0 += new_dt;
+#endif
   ++::status.hidden_steps;
   ++steps_total_;
   return (true);
 }
 /*--------------------------------------------------------------------------*/
 bool TRANSIENT::review()
-{
+{ untested();
   _sim->count_iterations(iTOTAL);
 
-  if (skipreview){
+  if (skipreview){ untested();
     return true;
+  }else{untested();
   }
   incomplete();
 
   TIME_PAIR time_by = CARD_LIST::card_list.tr_review();
+#ifdef DTIME
   _dt_by_error_estimate = time_by._error_estimate;
 
   // limit minimum time step
   // 2*_sim->_dtmin because _time[1] + _sim->_dtmin might be == _time[0].
-  if (time_by._event < time1 + 2*_sim->_dtmin) {
+  if (time_by._event < time1 + 2*_sim->_dtmin) { untested();
     _dt_by_ambiguous_event = time1 + 2*_sim->_dtmin;
-  }else{
+  }else{ untested();
     _dt_by_ambiguous_event = time_by._event;
   }
   // force advance when time too close to previous
-  if (std::abs(_dt_by_ambiguous_event - _sim->_time0) < 2*_sim->_dtmin) {
+  if (std::abs(_dt_by_ambiguous_event - _sim->_time0) < 2*_sim->_dtmin) { untested();
     _dt_by_ambiguous_event = _sim->_time0 + 2*_sim->_dtmin;
-  }else{
+  }else{ untested();
   }
 
-  if (time_by._error_estimate < time1 + 2*_sim->_dtmin) {
+  if (time_by._error_estimate < time1 + 2*_sim->_dtmin) { untested();
     _dt_by_error_estimate = time1 + 2*_sim->_dtmin;
-  }else{
+  }else{ untested();
     _dt_by_error_estimate = time_by._error_estimate;
   }
-  if (std::abs(_dt_by_error_estimate - _sim->_time0) < 1.1*_sim->_dtmin) {
+  if (std::abs(_dt_by_error_estimate - _sim->_time0) < 1.1*_sim->_dtmin) { untested();
     _dt_by_error_estimate = _sim->_time0 + 1.1*_sim->_dtmin;
-  }else{
+  }else{ untested();
   }
 
   return (_dt_by_error_estimate > _sim->_time0  &&  _dt_by_ambiguous_event > _sim->_time0);
+#else
+  _time_by_error_estimate = time_by._error_estimate;
+  // etc..
+#endif
 }
 /*--------------------------------------------------------------------------*/
 void TRANSIENT::accept()
-{
+{ untested();
+#ifdef USE_DTIME
   ++_sim->_timestep;
+#endif
   _sim->set_limit();
   if (OPT::traceload && !skipreview) { itested();
-    while (!_sim->_acceptq.empty()) {
+    while (!_sim->_acceptq.empty()) {untested();
       _sim->_acceptq.back()->tr_accept();
       _sim->_acceptq.pop_back();
     }
@@ -450,7 +489,7 @@ void TRANSIENT::accept()
 }
 /*--------------------------------------------------------------------------*/
 void TRANSIENT::reject()
-{
+{untested();
   ::status.accept.start();
   _sim->_acceptq.clear();
   ++steps_rejected_;

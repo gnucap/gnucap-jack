@@ -107,6 +107,7 @@ void TRANSIENT::setup(CS& Cmd)
 #else
   _tstrobe = 1/_sim->_freq;
   _sim->_dtmin = _tstrobe;
+  _dtmax = _tstrobe;
 #endif
 }
 /*--------------------------------------------------------------------------*/
@@ -387,13 +388,14 @@ bool TRANSIENT::next()
 
 #ifdef USE_DTIME
   double old_dt = _sim->_time0 - time1;
+  double new_dt = _dt_by_user_request;
 #else
-  incomplete();
   double old_dt = _sim->_time0 - _time1;
+  assert(_tstrobe);
+  double new_dt = _tstrobe;
 #endif
   assert(old_dt >= 0);
   
-  double new_dt = _dt_by_user_request;
   double newtime = _sim->_time0 + new_dt;
   STEP_CAUSE new_control = scNO_ADVANCE;
 
@@ -427,12 +429,12 @@ bool TRANSIENT::next()
   _sim->_dt0 = new_dt;
   _sim->_time0 = new_dt;
 #else
-  _sim->_time0 += new_dt;
+  _sim->_time0 = newtime;
 #endif
   ++::status.hidden_steps;
   ++steps_total_;
   return (true);
-}
+} //next
 /*--------------------------------------------------------------------------*/
 bool TRANSIENT::review()
 { untested();

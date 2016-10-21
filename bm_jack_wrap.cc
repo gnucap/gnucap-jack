@@ -78,10 +78,10 @@ class DEV_V_JACK : public COMPONENT { //
 			COMMON_COMPONENT* bc = b->clone();
 			d->attach_common(bc);
 			d->set_dev_type("v_jack");
-			assert(d->dev_type() == "v_jack");
+	//		assert(d->dev_type() == "v_jack"); // not yet
 			return d;
 		}
 		bool print_type_in_spice()const {return false;}
 }p2;
-DISPATCHER<CARD>::INSTALL d2(&device_dispatcher, "v_jack", &p2);
+DISPATCHER<CARD>::INSTALL d2(&device_dispatcher, "from_jack|v_jack", &p2);
 }

@@ -1,13 +1,14 @@
-attach s_jack.cc
-attach bm_jack.cc
-attach bm_jack_wrap.cc
+load public gnucap-default-plugins.so
+load public libjack.so
+
+attach ./gnucap-jack.so
 
 options trace
 
 verilog
 
-m_jack outjack(0 1);
-v_jack injack(0 2);
+to_jack outjack(0 1);
+from_jack injack(0 2);
 
 spice
 R1 1 2 1k

@@ -20,6 +20,9 @@
  * 02110-1301, USA.
  *------------------------------------------------------------------
  */
+
+#define USE(x)
+
 #include "globals.h"
 #include "l_dispatcher.h"
 #include "u_sim_data.h"
@@ -102,7 +105,8 @@ void TRANSIENT::setup(CS& Cmd)
   _sim->_dt0 = 0;
   _sim->_dtmin = _dtmax;
 #else
-  _sim->_dtmin = 1/_sim->_freq;
+  _tstrobe = 1/_sim->_freq;
+  _sim->_dtmin = _tstrobe;
 #endif
 }
 /*--------------------------------------------------------------------------*/
@@ -177,7 +181,7 @@ void TRANSIENT::options(CS& Cmd)
 //	void	TRANSIENT::reject(void);
 /*--------------------------------------------------------------------------*/
 /*--------------------------------------------------------------------------*/
-namespace TR { untested();
+namespace TR { //
   static std::string step_cause[] = { //
     "impossible",
     "user requested",
@@ -266,9 +270,13 @@ void TRANSIENT::sweep()
 	_time_by_user_request += _tstrobe;
 #endif
       }else{ untested();
-	incomplete();
+	trace2("hmm", _time_by_user_request, _tstrobe);
 #ifdef USE_DTIME
 	_time_by_user_request -= _sim->_dt0;
+#else
+	untested();
+	assert(_tstrobe);
+	_time_by_user_request += _tstrobe;
 #endif
       }
       assert(0 < _time_by_user_request);
@@ -381,7 +389,7 @@ bool TRANSIENT::next()
   double old_dt = _sim->_time0 - time1;
 #else
   incomplete();
-  double old_dt = 0;
+  double old_dt = _sim->_time0 - _time1;
 #endif
   assert(old_dt >= 0);
   

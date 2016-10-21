@@ -24,6 +24,8 @@
 
 //hack
 #define hp(x)
+//hack
+#define USE(x)
 
 #include "e_elemnt.h"
 #include "globals.h"

@@ -267,7 +267,7 @@ void EVAL_BM_JACK::expand(const COMPONENT* d)
 		*c = this;
 
 		if (_connect && _jack_port) {
-			error(bTRACE, "connecting " + d->long_label() + " to " + to_string(_connect) + "\n");
+			error(bDEBUG, "connecting " + d->long_label() + " to " + to_string(_connect) + "\n");
 			const char ** ports;
 			if ((ports = jack_get_ports (_client, NULL, NULL,
 							JackPortIsPhysical|JackPortIsInput)) == NULL) {

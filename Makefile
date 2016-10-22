@@ -50,6 +50,8 @@ gnucap.mk${SUFFIX}: gnucap.mk.in
 	    < $< > $@
 	chmod +x $@
 
+LIBS=-ljack
+
 %.so: %.cc
 	$(CXX) $(CXXFLAGS) $(GNUCAP_CXXFLAGS) $(CPPFLAGS) $(GNUCAP_CPPFLAGS) -o $@ $< ${LIBS}
 
@@ -63,7 +65,7 @@ gnucap_jack_OBJS = ${gnucap_jack_SOURCES:%.cc=%.o}
 gnucap_jack_SOBJS = ${gnucap_jack_SOURCES:%.cc=%.so}
 
 gnucap-jack.so: $(gnucap_jack_OBJS)
-	$(CXX) -shared $+ -o $@
+	$(CXX) -shared $+ -o $@ ${LIBS}
 
 .PHONY: check
 

@@ -1,7 +1,16 @@
+CONTENTS
+
 jack interface models and jack command.
 works with gnucap from dt branch on tool.
 
-=== v_jack device implements jack controlled voltage source
+BUILD/INSTALL
+
+type
+$ make
+or
+$ make install # untested...
+
+=== from_jack/v_jack device implements jack controlled voltage source
 
 parameters:
  - connect (unsigned)
@@ -10,7 +19,7 @@ parameters:
  - gain (real)
    gain. (not implemented)
 
-=== m_jack device provides output to jack
+=== to_jack/m_jack device provides output to jack
 
 parameters:
  - connect (unsigned)

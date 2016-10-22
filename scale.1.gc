@@ -15,19 +15,19 @@ spice
 V1 0 1 sin frequency=gamut(tone,base) amplitude=1
 
 .param tone=0
-.jack stop=.1 trace=a
+.jack start=0 stop=.1
 .param tone=2
-.jack stop=.1 trace=a
+.jack start=0 stop=.1
 .param tone=4
-.jack stop=.1 trace=a
+.jack start=0 stop=.1
 .param tone=5
-.jack stop=.1 trace=a
+.jack start=0 stop=.1
 .param tone=7
-.jack stop=.1 trace=a
+.jack start=0 stop=.1
 .param tone=9
-.jack stop=.1 trace=a
+.jack start=0 stop=.1
 .param tone=11
-.jack stop=.1 trace=a
+.jack start=0 stop=.1
 .param tone=12
-.jack stop=.1 trace=a
+.jack start=0 stop=.1
 .end

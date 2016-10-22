@@ -21,8 +21,8 @@ else
 endif
 
 GNUCAP_CXXFLAGS+= -fPIC -shared
-
 PLUGIN_FILES = gnucap-jack.so
+EXAMPLES = scale.1.gc
 
 gnucap_jack_SOURCES = \
 	f_gamut.cc \
@@ -71,16 +71,14 @@ gnucap-jack.so: $(gnucap_jack_OBJS)
 .PHONY: check
 
 install: $(EXEC_FILES) ${PLUGIN_FILES}
-	-install -d $(DESTDIR)/$(GNUCAP_EXEC_PREFIX)/bin
 	-install -d $(DESTDIR)/$(GNUCAP_PKGLIBDIR)
-	install $(EXEC_FILES) $(DESTDIR)/$(GNUCAP_EXEC_PREFIX)/bin
 	install $(PLUGIN_FILES) $(DESTDIR)/$(GNUCAP_PKGLIBDIR)
 
 	install -d $(DESTDIR)$(GNUCAP_DOCDIR)/$(PACKAGE_NAME)
 	install README $(DESTDIR)$(GNUCAP_DOCDIR)/$(PACKAGE_NAME)
 
-uninstall:
-	(cd $(GNUCAP_EXEC_PREFIX)/bin; rm $(EXEC_FILES))
+	install -d $(DESTDIR)$(GNUCAP_DOCDIR)/$(PACKAGE_NAME)/examples
+	install $(EXAMPLES) $(DESTDIR)$(GNUCAP_DOCDIR)/$(PACKAGE_NAME)/examples
 
 clean:
 	rm -f $(CLEANFILES)

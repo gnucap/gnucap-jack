@@ -10,11 +10,14 @@ options trace
 verilog
 
 to_jack #(.connect(1)) outjack(0 1);
+param f=440
 
 spice
-V1 0 1 sin frequency=441 amplitude=1
+V1 0 1 sin frequency=f amplitude=1
 
 .print tran v(1) v(2)
 .nodelist
+.jack stop=1 trace=a
+.param f=460;
 .jack stop=1 trace=a
 .end

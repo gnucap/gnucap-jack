@@ -1,12 +1,11 @@
-attach s_jack.cc
-attach bm_jack.cc
-attach bm_jack_wrap.cc
+attach public gnucap-default-plugins.so
+attach ./gnucap-jack.so
 
 options trace
 
 verilog
 
-m_jack #(.connect(0)) jack1(0 1);
+m_jack #(.connect(2)) jack1(0 1);
 * m_jack #(.connect(2)) jack2(0 2);
 
 

@@ -133,6 +133,7 @@ void TRANSIENT::options(CS& Cmd)
       || Get(Cmd, "dtr{atio}",	   &_dtratio_in)
       || Get(Cmd, "pl{ot}",	   &ploton)
       || Get(Cmd, "sk{ip}",	   &_skip_in)
+      || Get(Cmd, "sto{p}",	   &_tstop)
       || Get(Cmd, "te{mperature}", &_sim->_temp_c)
       || Get(Cmd, "uic",	   &_sim->_uic)
       || (Cmd.umatch("sample{rate} {=}") &&
@@ -433,7 +434,7 @@ bool TRANSIENT::next()
 #endif
   ++::status.hidden_steps;
   ++steps_total_;
-  return (true);
+  return (_sim->_time0 <= _tstop + _sim->_dtmin);
 } //next
 /*--------------------------------------------------------------------------*/
 bool TRANSIENT::review()

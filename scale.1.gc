@@ -1,0 +1,33 @@
+load public gnucap-default-plugins.so
+load public libjack.so
+attach ./gnucap-jack.so
+
+options trace
+
+verilog
+
+to_jack #(.connect(1)) outjack(0 1);
+param base=440
+param f=gamut(0,base)
+eval f
+
+spice
+V1 0 1 sin frequency=gamut(tone,base) amplitude=1
+
+.param tone=0
+.jack stop=.1 trace=a
+.param tone=2
+.jack stop=.1 trace=a
+.param tone=4
+.jack stop=.1 trace=a
+.param tone=5
+.jack stop=.1 trace=a
+.param tone=7
+.jack stop=.1 trace=a
+.param tone=9
+.jack stop=.1 trace=a
+.param tone=11
+.jack stop=.1 trace=a
+.param tone=12
+.jack stop=.1 trace=a
+.end

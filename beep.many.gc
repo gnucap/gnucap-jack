@@ -15,9 +15,12 @@ param f=440
 spice
 V1 0 1 sin frequency=f amplitude=1
 
+
 .print tran v(1) v(2)
 .nodelist
 .jack stop=1 trace=a
-.param f=460;
-.jack stop=1 trace=a
+.param f=880;
+.jack stop=.5 trace=a
+.param f=440;
+.jack stop=.5 trace=a
 .end

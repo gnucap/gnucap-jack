@@ -25,6 +25,7 @@ GNUCAP_CXXFLAGS+= -fPIC -shared
 PLUGIN_FILES = gnucap-jack.so
 
 gnucap_jack_SOURCES = \
+	f_gamut.cc \
 	bm_jack.cc \
 	bm_jack_wrap.cc \
 	s_jack.cc

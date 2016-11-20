@@ -21,8 +21,6 @@
  *------------------------------------------------------------------
  */
 
-#define USE(x)
-
 #include "globals.h"
 #include "l_dispatcher.h"
 #include "u_sim_data.h"

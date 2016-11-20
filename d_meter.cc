@@ -23,8 +23,6 @@
  * does nothing to the circuit, but has probes
  */
 
-#define USE(x)
-
 #include "globals.h"
 #include "e_elemnt.h"
 #include "u_xprobe.h"

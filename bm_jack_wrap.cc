@@ -21,9 +21,6 @@
  *------------------------------------------------------------------
  */
 
-// tmp
-#define USE(x)
-
 #include <globals.h>
 #include <e_compon.h>
 #ifndef HAVE_UINT_T

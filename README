@@ -1,14 +1,14 @@
 CONTENTS
 
 jack interface models and jack command.
-works with gnucap from dt branch on tool.
+works with gnucap/unstable
 
 BUILD/INSTALL
 
 type
 $ make
 or
-$ make install # untested...
+$ make install
 
 === from_jack/v_jack device implements jack controlled voltage source
 

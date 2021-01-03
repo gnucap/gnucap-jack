@@ -121,7 +121,7 @@ void TRANSIENT::options(CS& Cmd)
   bool ploton = IO::plotset  &&  plotlist().size() > 0;
   _sim->_uic = _cold = false;
   _trace = tNONE;
-  unsigned here = Cmd.cursor();
+  size_t here = Cmd.cursor();
   do{ untested();
     ONE_OF
       || Get(Cmd, "c{old}",	   &_cold)
